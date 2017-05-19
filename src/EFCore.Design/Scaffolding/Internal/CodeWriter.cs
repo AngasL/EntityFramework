@@ -113,7 +113,7 @@ namespace Microsoft.EntityFrameworkCore.Scaffolding.Internal
         ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public abstract Task<ReverseEngineerFiles> WriteCodeAsync(
+        public abstract Task<IEnumerable<string>> WriteCodeAsync(
             [NotNull] ModelConfiguration modelConfiguration,
             [NotNull] string outputPath,
             [NotNull] string dbContextClassName,

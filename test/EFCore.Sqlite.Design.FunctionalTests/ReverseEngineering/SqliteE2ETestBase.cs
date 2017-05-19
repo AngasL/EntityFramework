@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS Dependent (
                 };
                 var actualFileSet = new FileSet(InMemoryFiles, TestProjectFullPath)
                 {
-                    Files = Enumerable.Repeat(results.ContextFile, 1).Concat(results.EntityTypeFiles).Select(Path.GetFileName).ToList()
+                    Files = results.Select(Path.GetFileName).ToList()
                 };
                 AssertEqualFileContents(expectedFileSet, actualFileSet);
                 AssertCompile(actualFileSet);
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS OneToManyDependent (
                 };
                 var actualFileSet = new FileSet(InMemoryFiles, TestProjectFullPath)
                 {
-                    Files = Enumerable.Repeat(results.ContextFile, 1).Concat(results.EntityTypeFiles).Select(Path.GetFileName).ToList()
+                    Files = results.Select(Path.GetFileName).ToList()
                 };
                 AssertEqualFileContents(expectedFileSet, actualFileSet);
                 AssertCompile(actualFileSet);
@@ -167,7 +167,7 @@ CREATE TABLE IF NOT EXISTS Users_Groups (
                 };
                 var actualFileSet = new FileSet(InMemoryFiles, TestProjectFullPath)
                 {
-                    Files = Enumerable.Repeat(results.ContextFile, 1).Concat(results.EntityTypeFiles).Select(Path.GetFileName).ToList()
+                    Files = results.Select(Path.GetFileName).ToList()
                 };
                 AssertEqualFileContents(expectedFileSet, actualFileSet);
                 AssertCompile(actualFileSet);
@@ -206,7 +206,7 @@ CREATE TABLE IF NOT EXISTS Users_Groups (
                 };
                 var actualFileSet = new FileSet(InMemoryFiles, TestProjectFullPath)
                 {
-                    Files = Enumerable.Repeat(results.ContextFile, 1).Concat(results.EntityTypeFiles).Select(Path.GetFileName).ToList()
+                    Files = results.Select(Path.GetFileName).ToList()
                 };
                 AssertEqualFileContents(expectedFileSet, actualFileSet);
                 AssertCompile(actualFileSet);
@@ -238,7 +238,7 @@ CREATE TABLE IF NOT EXISTS Users_Groups (
                     }
                 };
                 AssertLog(expectedLog);
-                Assert.Contains(errorMessage, InMemoryFiles.RetrieveFileContents(TestProjectFullPath, Path.GetFileName(results.ContextFile)));
+                Assert.Contains(errorMessage, InMemoryFiles.RetrieveFileContents(TestProjectFullPath, Path.GetFileName(results.First())));
             }
         }
 
@@ -284,7 +284,7 @@ CREATE TABLE IF NOT EXISTS Principal ( Id INT);");
                 };
                 var actualFileSet = new FileSet(InMemoryFiles, TestProjectFullPath)
                 {
-                    Files = Enumerable.Repeat(results.ContextFile, 1).Concat(results.EntityTypeFiles).Select(Path.GetFileName).ToList()
+                    Files = results.Select(Path.GetFileName).ToList()
                 };
                 AssertEqualFileContents(expectedFileSet, actualFileSet);
                 AssertCompile(actualFileSet);
@@ -334,7 +334,7 @@ CREATE TABLE IF NOT EXISTS String (
 
                 var files = new FileSet(InMemoryFiles, TestProjectFullPath)
                 {
-                    Files = Enumerable.Repeat(results.ContextFile, 1).Concat(results.EntityTypeFiles).Select(Path.GetFileName).ToList()
+                    Files = results.Select(Path.GetFileName).ToList()
                 };
                 AssertCompile(files);
             }
@@ -380,7 +380,7 @@ CREATE TABLE IF NOT EXISTS Comment (
                 };
                 var actualFileSet = new FileSet(InMemoryFiles, TestProjectFullPath)
                 {
-                    Files = Enumerable.Repeat(results.ContextFile, 1).Concat(results.EntityTypeFiles).Select(Path.GetFileName).ToList()
+                    Files = results.Select(Path.GetFileName).ToList()
                 };
                 AssertEqualFileContents(expectedFileSet, actualFileSet);
                 AssertCompile(actualFileSet);

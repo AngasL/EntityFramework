@@ -100,7 +100,7 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Design.FunctionalTests.Reverse
 
             var actualFileSet = new FileSet(InMemoryFiles, Path.GetFullPath(Path.Combine(TestProjectDir, TestSubDir)))
             {
-                Files = Enumerable.Repeat(filePaths.ContextFile, 1).Concat(filePaths.EntityTypeFiles).Select(Path.GetFileName).ToList()
+                Files = filePaths.Select(Path.GetFileName).ToList()
             };
 
             var expectedFileSet = new FileSet(new FileSystemFileService(),
@@ -152,7 +152,7 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Design.FunctionalTests.Reverse
 
             var actualFileSet = new FileSet(InMemoryFiles, Path.GetFullPath(TestProjectDir))
             {
-                Files = Enumerable.Repeat(filePaths.ContextFile, 1).Concat(filePaths.EntityTypeFiles).Select(Path.GetFileName).ToList()
+                Files = filePaths.Select(Path.GetFileName).ToList()
             };
 
             var expectedFileSet = new FileSet(new FileSystemFileService(),
@@ -239,7 +239,7 @@ CREATE SEQUENCE NumericSequence
 
                 var actualFileSet = new FileSet(InMemoryFiles, Path.GetFullPath(TestProjectDir))
                 {
-                    Files = new[] { filePaths.ContextFile }.Concat(filePaths.EntityTypeFiles).Select(Path.GetFileName).ToList()
+                    Files = filePaths.Select(Path.GetFileName).ToList()
                 };
 
                 AssertLog(new LoggerMessages
@@ -297,7 +297,7 @@ CREATE TABLE PrimaryKeyWithSequence (
 
                 var actualFileSet = new FileSet(InMemoryFiles, Path.GetFullPath(TestProjectDir))
                 {
-                    Files = new[] { filePaths.ContextFile }.Concat(filePaths.EntityTypeFiles).Select(Path.GetFileName).ToList()
+                    Files = filePaths.Select(Path.GetFileName).ToList()
                 };
 
                 AssertEqualFileContents(expectedFileSet, actualFileSet);
@@ -345,7 +345,7 @@ CREATE INDEX Unicorn_Filtered_Index
 
                 var actualFileSet = new FileSet(InMemoryFiles, Path.GetFullPath(TestProjectDir))
                 {
-                    Files = new[] { filePaths.ContextFile }.Concat(filePaths.EntityTypeFiles).Select(Path.GetFileName).ToList()
+                    Files = filePaths.Select(Path.GetFileName).ToList()
                 };
 
                 AssertEqualFileContents(expectedFileSet, actualFileSet);
@@ -399,7 +399,7 @@ DROP TABLE dbo.History;
 
                 var actualFileSet = new FileSet(InMemoryFiles, Path.GetFullPath(TestProjectDir))
                 {
-                    Files = new[] { filePaths.ContextFile }.Concat(filePaths.EntityTypeFiles).Select(Path.GetFileName).ToList()
+                    Files = filePaths.Select(Path.GetFileName).ToList()
                 };
 
                 AssertEqualFileContents(expectedFileSet, actualFileSet);

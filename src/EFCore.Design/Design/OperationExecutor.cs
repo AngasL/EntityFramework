@@ -356,9 +356,7 @@ namespace Microsoft.EntityFrameworkCore.Design
                 schemaFilters, tableFilters, useDataAnnotations, overwriteFiles).Result;
 
             // NOTE: First file will be opened in VS
-            yield return files.ContextFile;
-
-            foreach (var file in files.EntityTypeFiles)
+            foreach (var file in files)
             {
                 yield return file;
             }

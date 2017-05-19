@@ -1,6 +1,8 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -49,7 +51,7 @@ namespace Microsoft.EntityFrameworkCore.Scaffolding.Internal
         ///     This API supports the Entity Framework Core infrastructure and is not intended to be used
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
-        public override Task<ReverseEngineerFiles> WriteCodeAsync(
+        public override Task<IEnumerable<string>> WriteCodeAsync(
             ModelConfiguration modelConfiguration,
             string outputPath,
             string dbContextClassName,
@@ -61,7 +63,7 @@ namespace Microsoft.EntityFrameworkCore.Scaffolding.Internal
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            var resultingFiles = new ReverseEngineerFiles();
+            var resultingFiles = new List<string>();
 
             var generatedCode = DbContextWriter.WriteCode(modelConfiguration);
 
@@ -69,7 +71,7 @@ namespace Microsoft.EntityFrameworkCore.Scaffolding.Internal
             var dbContextFileName = dbContextClassName + FileExtension;
             var dbContextFileFullPath = FileService.OutputFile(
                 outputPath, dbContextFileName, generatedCode);
-            resultingFiles.ContextFile = dbContextFileFullPath;
+            resultingFiles.Add(dbContextFileFullPath);
 
             foreach (var entityConfig in modelConfiguration.EntityConfigurations)
             {
@@ -79,10 +81,10 @@ namespace Microsoft.EntityFrameworkCore.Scaffolding.Internal
                 var entityTypeFileName = entityConfig.EntityType.DisplayName() + FileExtension;
                 var entityTypeFileFullPath = FileService.OutputFile(
                     outputPath, entityTypeFileName, generatedCode);
-                resultingFiles.EntityTypeFiles.Add(entityTypeFileFullPath);
+                resultingFiles.Add(entityTypeFileFullPath);
             }
 
-            return Task.FromResult(resultingFiles);
+            return Task.FromResult(resultingFiles.AsEnumerable());
         }
     }
 }
