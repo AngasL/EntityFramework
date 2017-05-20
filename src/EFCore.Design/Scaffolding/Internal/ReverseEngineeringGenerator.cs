@@ -106,13 +106,13 @@ namespace Microsoft.EntityFrameworkCore.Scaffolding.Internal
                                       .Select(p => CSharpUtilities.Instance.GenerateCSharpIdentifier(p, null)));
             }
 
-            var customConfiguration = _configurationFactory.CreateCustomConfiguration(connectionString, contextName, @namespace, useDataAnnotations);
-            var modelConfiguration = _configurationFactory.CreateModelConfiguration(model, customConfiguration);
+            //var customConfiguration = _configurationFactory.CreateCustomConfiguration(connectionString, contextName, @namespace, useDataAnnotations);
+            var modelConfiguration = _configurationFactory.CreateModelConfiguration(model, connectionString, contextName, @namespace, useDataAnnotations);
 
             var dbContextClassName =
-                string.IsNullOrWhiteSpace(customConfiguration.ContextClassName)
+                string.IsNullOrWhiteSpace(contextName)
                     ? modelConfiguration.ClassName()
-                    : customConfiguration.ContextClassName;
+                    : contextName;
 
             CheckOutputFiles(fullOutputPath, dbContextClassName, model, overwriteFiles);
 
