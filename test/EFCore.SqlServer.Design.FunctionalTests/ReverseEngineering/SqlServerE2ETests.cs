@@ -85,18 +85,17 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Design.FunctionalTests.Reverse
         [UseCulture("en-US")]
         public void E2ETest_UseAttributesInsteadOfFluentApi()
         {
-            var configuration = new ReverseEngineeringConfiguration
-            {
-                ConnectionString = _connectionString,
-                ContextClassName = "AttributesContext",
-                ProjectPath = TestProjectDir + Path.DirectorySeparatorChar, // tests that ending DirectorySeparatorChar does not affect namespace
-                ProjectRootNamespace = TestNamespace,
-                OutputPath = TestSubDir,
-                TableSelectionSet = Filter,
-                UseDataAnnotations = true
-            };
-
-            var filePaths = Generator.GenerateAsync(configuration).GetAwaiter().GetResult();
+            var filePaths = Generator.GenerateAsync(
+                    _connectionString,
+                    Filter,
+                    TestProjectDir + Path.DirectorySeparatorChar, // tests that ending DirectorySeparatorChar does not affect namespace
+                    TestSubDir,
+                    TestNamespace,
+                    contextName: "AttributesContext",
+                    useDataAnnotations: true,
+                    overwriteFiles: false)
+                .GetAwaiter()
+                .GetResult();
 
             var actualFileSet = new FileSet(InMemoryFiles, Path.GetFullPath(Path.Combine(TestProjectDir, TestSubDir)))
             {
@@ -138,17 +137,17 @@ namespace Microsoft.EntityFrameworkCore.SqlServer.Design.FunctionalTests.Reverse
         [UseCulture("en-US")]
         public void E2ETest_AllFluentApi()
         {
-            var configuration = new ReverseEngineeringConfiguration
-            {
-                ConnectionString = _connectionString,
-                ProjectPath = TestProjectDir,
-                ProjectRootNamespace = TestNamespace,
-                OutputPath = null, // not used for this test
-                UseDataAnnotations = false,
-                TableSelectionSet = Filter
-            };
-
-            var filePaths = Generator.GenerateAsync(configuration).GetAwaiter().GetResult();
+            var filePaths = Generator.GenerateAsync(
+                    _connectionString,
+                    Filter,
+                    TestProjectDir,
+                    outputPath: null, // not used for this test
+                    rootNamespace: TestNamespace,
+                    contextName: null,
+                    useDataAnnotations: false,
+                    overwriteFiles: false)
+                .GetAwaiter()
+                .GetResult();
 
             var actualFileSet = new FileSet(InMemoryFiles, Path.GetFullPath(TestProjectDir))
             {
@@ -221,21 +220,26 @@ CREATE SEQUENCE DecimalSequence
 CREATE SEQUENCE NumericSequence
     AS numeric;");
 
-                var configuration = new ReverseEngineeringConfiguration
-                {
-                    ConnectionString = scratch.ConnectionString,
-                    ProjectPath = TestProjectDir + Path.DirectorySeparatorChar,
-                    ProjectRootNamespace = TestNamespace,
-                    ContextClassName = "SequenceContext"
-                };
-                var expectedFileSet = new FileSet(new FileSystemFileService(),
+
+                var expectedFileSet = new FileSet(
+                    new FileSystemFileService(),
                     Path.Combine("ReverseEngineering", "Expected"),
                     contents => contents.Replace("{{connectionString}}", scratch.ConnectionString))
                 {
                     Files = new List<string> { "SequenceContext.expected" }
                 };
 
-                var filePaths = Generator.GenerateAsync(configuration).GetAwaiter().GetResult();
+                var filePaths = Generator.GenerateAsync(
+                        scratch.ConnectionString,
+                        TableSelectionSet.All,
+                        TestProjectDir + Path.DirectorySeparatorChar,
+                        outputPath: null, // not used for this test
+                        rootNamespace: TestNamespace,
+                        contextName: "SequenceContext",
+                        useDataAnnotations: false,
+                        overwriteFiles: false)
+                    .GetAwaiter()
+                    .GetResult();
 
                 var actualFileSet = new FileSet(InMemoryFiles, Path.GetFullPath(TestProjectDir))
                 {
@@ -274,14 +278,6 @@ CREATE TABLE PrimaryKeyWithSequence (
 );
 ");
 
-                var configuration = new ReverseEngineeringConfiguration
-                {
-                    ConnectionString = scratch.ConnectionString,
-                    ProjectPath = TestProjectDir + Path.DirectorySeparatorChar,
-                    ProjectRootNamespace = TestNamespace,
-                    ContextClassName = "PrimaryKeyWithSequenceContext",
-                    UseDataAnnotations = false
-                };
                 var expectedFileSet = new FileSet(new FileSystemFileService(),
                     Path.Combine("ReverseEngineering", "Expected"),
                     contents => contents.Replace("{{connectionString}}", scratch.ConnectionString))
@@ -293,7 +289,17 @@ CREATE TABLE PrimaryKeyWithSequence (
                     }
                 };
 
-                var filePaths = Generator.GenerateAsync(configuration).GetAwaiter().GetResult();
+                var filePaths = Generator.GenerateAsync(
+                        scratch.ConnectionString,
+                        TableSelectionSet.All,
+                        TestProjectDir + Path.DirectorySeparatorChar,
+                        outputPath: null, // not used for this test
+                        rootNamespace: TestNamespace,
+                        contextName: "PrimaryKeyWithSequenceContext",
+                        useDataAnnotations: false,
+                        overwriteFiles: false)
+                    .GetAwaiter()
+                    .GetResult();
 
                 var actualFileSet = new FileSet(InMemoryFiles, Path.GetFullPath(TestProjectDir))
                 {
@@ -322,14 +328,6 @@ CREATE INDEX Unicorn_Filtered_Index
     ON FilteredIndex (Number) WHERE Number > 10
 ");
 
-                var configuration = new ReverseEngineeringConfiguration
-                {
-                    ConnectionString = scratch.ConnectionString,
-                    ProjectPath = TestProjectDir + Path.DirectorySeparatorChar,
-                    ProjectRootNamespace = TestNamespace,
-                    ContextClassName = "FilteredIndexContext",
-                    UseDataAnnotations = false
-                };
                 var expectedFileSet = new FileSet(new FileSystemFileService(),
                     Path.Combine("ReverseEngineering", "Expected"),
                     contents => contents.Replace("{{connectionString}}", scratch.ConnectionString))
@@ -341,7 +339,17 @@ CREATE INDEX Unicorn_Filtered_Index
                     }
                 };
 
-                var filePaths = Generator.GenerateAsync(configuration).GetAwaiter().GetResult();
+                var filePaths = Generator.GenerateAsync(
+                        scratch.ConnectionString,
+                        TableSelectionSet.All,
+                        TestProjectDir + Path.DirectorySeparatorChar,
+                        outputPath: null, // not used for this test
+                        rootNamespace: TestNamespace,
+                        contextName: "FilteredIndexContext",
+                        useDataAnnotations: false,
+                        overwriteFiles: false)
+                    .GetAwaiter()
+                    .GetResult();
 
                 var actualFileSet = new FileSet(InMemoryFiles, Path.GetFullPath(TestProjectDir))
                 {
@@ -371,14 +379,6 @@ CREATE TABLE dbo.SystemVersioned
 WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.History));
 ");
 
-                var configuration = new ReverseEngineeringConfiguration
-                {
-                    ConnectionString = scratch.ConnectionString,
-                    ProjectPath = TestProjectDir + Path.DirectorySeparatorChar,
-                    ProjectRootNamespace = TestNamespace,
-                    ContextClassName = "SystemVersionedContext",
-                    UseDataAnnotations = false
-                };
                 var expectedFileSet = new FileSet(new FileSystemFileService(),
                     Path.Combine("ReverseEngineering", "Expected"),
                     contents => contents.Replace("{{connectionString}}", scratch.ConnectionString))
@@ -390,7 +390,18 @@ WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = dbo.History));
                     }
                 };
 
-                var filePaths = Generator.GenerateAsync(configuration).GetAwaiter().GetResult();
+                var filePaths = Generator.GenerateAsync(
+                        scratch.ConnectionString,
+                        TableSelectionSet.All,
+                        TestProjectDir + Path.DirectorySeparatorChar,
+                        outputPath: null, // not used for this test
+                        rootNamespace: TestNamespace,
+                        contextName: "SystemVersionedContext",
+                        useDataAnnotations: false,
+                        overwriteFiles: false)
+                    .GetAwaiter()
+                    .GetResult();
+
 
                 scratch.ExecuteNonQuery(@"
 ALTER TABLE dbo.SystemVersioned SET (SYSTEM_VERSIONING = OFF);
